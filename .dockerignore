@@ -1,0 +1,8 @@
+node_modules
+.next
+.git
+*.md
+ai-team
+.env
+.env.*
+!.env.example

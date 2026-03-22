@@ -1,0 +1,18 @@
+# big / generated
+data
+*.jsonl
+*.parquet
+*.csv
+*.log
+
+# node/next build junk
+node_modules
+.next
+dist
+build
+coverage
+
+# git + tooling caches
+.git
+.cache
+.turbo

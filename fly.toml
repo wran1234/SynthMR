@@ -1,0 +1,51 @@
+# SynthMR: one app, web + worker processes. Deploy with: fly deploy
+# First time: fly launch (or create app), create volume, set secrets (see README).
+
+app = "synthmr"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8080"
+  NODE_ENV = "production"
+  DATA_DIR = "/data"
+
+# Web serves HTTP; worker runs BullMQ jobs. Same image, different commands.
+[processes]
+  web = "node server.js"
+  worker = "npm run worker"
+
+[http_service]
+  processes = ["web"]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "stop"
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    path = "/api/health"
+    timeout = "5s"
+
+  [[http_service.checks]]
+    grace_period = "10s"
+    interval = "30s"
+    method = "GET"
+    path = "/api/ready"
+    timeout = "5s"
+
+# Run Prisma migrations before each deploy (no volumes in release VM).
+[deploy]
+  release_command = "npx prisma migrate deploy"
+
+# Persistent storage for populations/personas/souls.
+# Web routes serve persona/soul reads, so both web and worker need /data mounted.
+[[mounts]]
+  source = "synthmr_data"
+  destination = "/data"
+  processes = ["web", "worker"]
+  initial_size = "10gb"

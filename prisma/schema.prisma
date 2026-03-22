@@ -1,0 +1,234 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                 String        @id @default(cuid())
+  name               String?
+  email              String?       @unique
+  emailVerified      DateTime?
+  image              String?
+  passwordHash       String?       // argon2; null for legacy migrated users
+  stripeCustomerId   String?       // billing-ready
+  plan               String?       // e.g. free, pro
+  planStatus         String?       // e.g. active, canceled
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  authSessions       AuthSession[]
+  studies            Study[]
+  audiencePresets    AudiencePreset[]
+  auditLogs          AuditLog[]
+  chatThreads        ChatThread[]
+  apiKeys            ApiKey[]
+  webhookEndpoints   WebhookEndpoint[]
+}
+
+model AuthSession {
+  id        String   @id @default(cuid())
+  userId    String
+  tokenHash String   @unique
+  createdAt DateTime @default(now())
+  expiresAt DateTime
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model AuditLog {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  action       String   // study_create, study_delete, run_start, run_delete
+  resourceType String   // study, run
+  resourceId   String
+  timestamp    DateTime @default(now())
+
+  @@index([userId])
+  @@index([timestamp])
+}
+
+model AudiencePreset {
+  id                 String   @id @default(cuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name               String
+  targetAudienceJson Json
+  createdAt          DateTime @default(now())
+
+  @@index([userId])
+}
+
+// Legacy NextAuth models (Account, Session, VerificationToken) removed.
+// SynthMR uses custom AuthSession with Argon2 password hashing.
+// If migrating from NextAuth, run: DROP TABLE IF EXISTS "Account", "Session", "VerificationToken";
+
+model Study {
+  id                 String     @id @default(cuid())
+  userId             String?
+  user               User?      @relation(fields: [userId], references: [id])
+  ideaText           String
+  geography          String     @default("US")
+  industry           String?
+  pricePoints        Float[]    // e.g. [9, 19, 49]
+  targetAudienceJson Json?      // { label, ageRange, incomeRange, education?, employment?, keywords? }
+  status             String     @default("draft") // draft | running | completed | failed
+  createdAt          DateTime   @default(now())
+  runs               StudyRun[]
+  chatThreads        ChatThread[]
+
+  @@index([userId])
+}
+
+model StudyRun {
+  id                    String    @id @default(cuid())
+  studyId               String
+  study                 Study     @relation(fields: [studyId], references: [id], onDelete: Cascade)
+  seed                  String
+  populationManifestPath String?
+  populationMode        String    @default("general") // general | audience_specific
+  populationSize        Int?      // set for audience_specific; null = use env for general
+  audienceLabel         String?   // copy of target audience label when audience_specific
+  populationMethod      String?   // "full" | "direct" — how population was created
+  populationVersion     String?   // e.g. "direct_v1" for reproducibility
+  sampleSize            Int       @default(500)
+  llmCallsUsed          Int       @default(0)   // budget enforced atomically (MAX_LLM_CALLS_PER_RUN)
+  llmTokensUsed         Int       @default(0)   // scaffolding for billing
+  llmCostCents          Int       @default(0)  // scaffolding for billing
+  status                String    @default("pending") // pending | generating_population | sampling | surveying | aggregating | completed | failed
+  jobId                 String?   @unique
+  errorMessage          String?
+  startedAt             DateTime?
+  finishedAt            DateTime?
+  createdAt             DateTime  @default(now())
+  survey                Survey?
+  responses             Response[]
+  aggregates            Aggregate[]
+  sampledPersonas       SampledPersona[]
+  chatThreads           ChatThread[]
+
+  @@index([studyId])
+}
+
+model ChatThread {
+  id          String        @id @default(cuid())
+  studyId     String
+  study       Study         @relation(fields: [studyId], references: [id], onDelete: Cascade)
+  studyRunId  String
+  studyRun    StudyRun      @relation(fields: [studyRunId], references: [id], onDelete: Cascade)
+  userId      String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  contextSnapshot Json?
+  createdAt   DateTime      @default(now())
+  messages    ChatMessage[]
+
+  @@index([userId])
+  @@index([studyRunId])
+}
+
+model ChatMessage {
+  id        String     @id @default(cuid())
+  threadId  String
+  thread    ChatThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  role      String     // "user" | "assistant"
+  clientMessageId String?
+  content   String     @db.Text
+  createdAt DateTime   @default(now())
+
+  @@index([threadId])
+  @@unique([threadId, clientMessageId])
+}
+
+model SampledPersona {
+  id           String   @id @default(cuid())
+  studyRunId   String
+  studyRun     StudyRun @relation(fields: [studyRunId], references: [id], onDelete: Cascade)
+  personaId    String
+  localPath    String   // e.g. absolute path to persona folder
+  soulVersion  Int      @default(1)
+  createdAt    DateTime @default(now())
+  soulEdits    SoulEdit[]
+
+  @@unique([studyRunId, personaId])
+  @@index([studyRunId])
+}
+
+model SoulEdit {
+  id               String         @id @default(cuid())
+  sampledPersonaId  String
+  sampledPersona   SampledPersona @relation(fields: [sampledPersonaId], references: [id], onDelete: Cascade)
+  fromVersion      Int
+  toVersion        Int
+  reason           String
+  createdAt        DateTime       @default(now())
+
+  @@index([sampledPersonaId])
+}
+
+model Survey {
+  id         String   @id @default(cuid())
+  studyRunId String   @unique
+  studyRun   StudyRun @relation(fields: [studyRunId], references: [id], onDelete: Cascade)
+  questions  Json     // array of { id, type, text, options? }
+  createdAt  DateTime @default(now())
+}
+
+model Response {
+  id         String   @id @default(cuid())
+  studyRunId String
+  studyRun   StudyRun @relation(fields: [studyRunId], references: [id], onDelete: Cascade)
+  personaId  String
+  answers    Json     // { questionId: answer }
+  buys       Json     // { [price]: boolean }
+  objections Json     // string[]
+  valueScore Int?     // 1-10
+  createdAt  DateTime @default(now())
+
+  @@unique([studyRunId, personaId])
+  @@index([studyRunId])
+}
+
+model Aggregate {
+  id         String   @id @default(cuid())
+  studyRunId String   @unique
+  studyRun   StudyRun @relation(fields: [studyRunId], references: [id], onDelete: Cascade)
+  results    Json     // { segments, wtpCurve, topObjections, nextExperiments } — encrypted at rest when DATA_ENCRYPTION_KEY set
+  createdAt  DateTime @default(now())
+
+  @@index([studyRunId])
+}
+
+model ApiKey {
+  id         String    @id @default(cuid())
+  userId     String
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name       String
+  keyPrefix  String
+  keyHash    String    @unique
+  scopes     Json
+  lastUsedAt DateTime?
+  createdAt  DateTime  @default(now())
+  revokedAt  DateTime?
+
+  @@index([userId, createdAt])
+  @@index([userId, revokedAt])
+}
+
+model WebhookEndpoint {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  url       String
+  secret    String
+  events    Json
+  createdAt DateTime  @default(now())
+  revokedAt DateTime?
+
+  @@index([userId, createdAt])
+  @@index([userId, revokedAt])
+}

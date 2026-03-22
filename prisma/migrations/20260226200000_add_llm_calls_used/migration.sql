@@ -1,0 +1,2 @@
+-- AlterTable
+ALTER TABLE "StudyRun" ADD COLUMN "llmCallsUsed" INTEGER NOT NULL DEFAULT 0;

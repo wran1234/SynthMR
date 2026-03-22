@@ -1,0 +1,23 @@
+{
+  "schema_version": "v1",
+  "name_for_human": "SynthMR Agent API",
+  "name_for_model": "synthmr_agent_api",
+  "description_for_human": "Create studies, run synthetic market research, fetch results, and chat about outcomes.",
+  "description_for_model": "Use SynthMR tools to create studies, start runs, check run status, fetch aggregate results, and answer follow-up questions over completed runs.",
+  "auth": {
+    "type": "service_http",
+    "authorization_type": "bearer"
+  },
+  "api": {
+    "type": "openapi",
+    "url": "https://your-synthmr-domain.com/api/openapi.json"
+  },
+  "tool_list": [
+    "create_study",
+    "get_study",
+    "start_run",
+    "get_run",
+    "get_results",
+    "chat_run"
+  ]
+}
