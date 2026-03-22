@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # SynthMR – Synthetic Market Research
 
 MVP web app that lets you enter a business idea and price points, then simulates market research using a synthetic population and AI-driven survey responses. Outputs target segments and willingness-to-pay.
@@ -485,3 +486,7 @@ curl -X POST "https://your-synthmr-domain.com/api/v1/studies" \
 - **LLM errors**: Check `LLM_BASE_URL`, `LLM_API_KEY`, and `LLM_MODEL` in `.env`.
 - **DB connection**: Ensure `docker compose up` has started Postgres and that `DATABASE_URL` matches.
 - **Cursor slow or indexing forever**: (1) Open the `SynthMR/` folder only, not a parent. (2) Use `.cursorignore` (see repo root) so `data/`, `*.jsonl`, `node_modules`, etc. aren’t indexed. (3) Set `DATA_DIR` to a path outside the repo (e.g. `~/synthmr-data`) so 1M JSONL files aren’t inside the project. Restart Cursor (Cmd+Q, reopen) after adding `.cursorignore`.
+=======
+# SynthMR
+A synthetic market research agent 
+>>>>>>> be8e3dae72eecab081f618e8c9809e7caa8f5fc0
