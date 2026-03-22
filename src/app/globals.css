@@ -14,7 +14,7 @@
     --muted-foreground: 100 116 139;
     --destructive: 185 28 28;
     /* Design system: accent used consistently (buttons, links, focus, progress) */
-    --accent: 79 70 229;
+    --accent: 37 99 235;
     --accent-foreground: 255 255 255;
     /* Spacing scale (4px base) */
     --space-1: 0.25rem;
@@ -37,7 +37,7 @@
     --foreground: 248 250 252;
     --muted-foreground: 148 163 184;
     --destructive: 248 113 113;
-    --accent: 129 140 248;
+    --accent: 147 197 253;
     --accent-foreground: 15 23 42;
   }
 
@@ -62,7 +62,7 @@
   }
 
   a {
-    @apply text-indigo-600 underline-offset-4 transition-colors hover:text-indigo-700 hover:underline dark:text-indigo-400 dark:hover:text-indigo-300;
+    @apply text-blue-600 underline-offset-4 transition-colors hover:text-blue-700 hover:underline dark:text-blue-300 dark:hover:text-blue-200;
   }
 
   h1 {
@@ -147,7 +147,7 @@
 
   /* Badge success (completed) */
   .badge-success {
-    @apply bg-emerald-100 text-emerald-800 dark:bg-emerald-900/40 dark:text-emerald-300;
+    @apply bg-blue-100 text-blue-800 dark:bg-blue-900/40 dark:text-blue-200;
   }
 
   /* Typography hierarchy */

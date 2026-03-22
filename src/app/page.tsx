@@ -204,8 +204,8 @@ export default function LandingPage() {
               Total: 2–6 weeks per idea
             </p>
           </div>
-          <div className="card-panel flex flex-col rounded-xl border-2 border-emerald-200/80 bg-emerald-50/30 p-6 dark:border-emerald-800/60 dark:bg-emerald-900/20">
-            <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300">
+          <div className="card-panel flex flex-col rounded-xl border-2 border-blue-200/80 bg-blue-50/30 p-6 dark:border-blue-800/60 dark:bg-blue-900/20">
+            <div className="flex items-center gap-2 text-blue-700 dark:text-blue-300">
               <Zap className="h-5 w-5" />
               <span className="font-semibold">SynthMR</span>
             </div>
@@ -218,12 +218,12 @@ export default function LandingPage() {
                   key={item}
                   className="flex items-start gap-2 text-sm text-slate-700 dark:text-slate-300"
                 >
-                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                  <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-blue-600 dark:text-blue-400" />
                   {item}
                 </li>
               ))}
             </ul>
-            <p className="mt-4 rounded-lg bg-emerald-100/80 px-3 py-2 text-sm font-semibold text-emerald-800 dark:bg-emerald-900/50 dark:text-emerald-200">
+            <p className="mt-4 rounded-lg bg-blue-100/80 px-3 py-2 text-sm font-semibold text-blue-800 dark:bg-blue-900/50 dark:text-blue-200">
               Save weeks per idea — test many ideas instead of one
             </p>
           </div>
@@ -244,7 +244,7 @@ export default function LandingPage() {
               key={title}
               className="card-panel flex flex-col rounded-xl border border-slate-200/80 p-6 dark:border-slate-700/80"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-100 text-indigo-600 dark:bg-indigo-900/50 dark:text-indigo-300">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-200">
                 <Icon className="h-5 w-5" />
               </div>
               <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-50">
@@ -267,7 +267,7 @@ export default function LandingPage() {
               key={item.step}
               className="card-panel flex flex-col rounded-xl border border-slate-200/80 p-6 dark:border-slate-700/80"
             >
-              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-indigo-100 text-lg font-semibold text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300">
+              <span className="inline-flex h-10 w-10 items-center justify-center rounded-full bg-blue-100 text-lg font-semibold text-blue-700 dark:bg-blue-900/50 dark:text-blue-200">
                 {item.step}
               </span>
               <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-50">
@@ -301,7 +301,7 @@ export default function LandingPage() {
                 {[40, 55, 70, 65, 48, 32, 18].map((h, i) => (
                   <div
                     key={i}
-                    className="flex-1 rounded-t bg-indigo-500/70 dark:bg-indigo-400/60 transition-opacity hover:opacity-90"
+                    className="flex-1 rounded-t bg-blue-500/70 dark:bg-blue-400/60 transition-opacity hover:opacity-90"
                     style={{ height: `${h}%` }}
                     title={`$${(i + 1) * 10}`}
                   />
@@ -363,15 +363,15 @@ export default function LandingPage() {
             </p>
             <ul className="mt-4 space-y-2 text-sm text-slate-700 dark:text-slate-300">
               <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-blue-600" />
                 Synthetic population & survey
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-blue-600" />
                 WTP curve & segments
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-blue-600" />
                 Export & report view
               </li>
             </ul>
@@ -379,7 +379,7 @@ export default function LandingPage() {
               <Button className="btn-primary w-full">Start free</Button>
             </Link>
           </div>
-          <div className="card-panel flex flex-col rounded-xl border-2 border-indigo-200 bg-indigo-50/30 p-6 dark:border-indigo-800 dark:bg-indigo-900/20">
+          <div className="card-panel flex flex-col rounded-xl border-2 border-blue-200 bg-blue-50/30 p-6 dark:border-blue-800 dark:bg-blue-900/20">
             <div className="flex items-center justify-between">
               <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-50">Pro</h3>
               <span className="text-2xl font-bold text-slate-900 dark:text-slate-50">Soon</span>
@@ -389,15 +389,15 @@ export default function LandingPage() {
             </p>
             <ul className="mt-4 space-y-2 text-sm text-slate-700 dark:text-slate-300">
               <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-blue-600" />
                 Everything in Free
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-blue-600" />
                 Larger sample size
               </li>
               <li className="flex items-center gap-2">
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-600" />
+                <CheckCircle2 className="h-4 w-4 shrink-0 text-blue-600" />
                 Priority support
               </li>
             </ul>
